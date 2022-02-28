@@ -83,9 +83,9 @@ router.post("/", async (req, res) => {
             const productToAdd = req.body;
             const addedProduct = await req.products.save(productToAdd);
 
-            res.json({
-                addedProduct: addedProduct,
-            });
+            setTimeout(() => {
+                res.redirect("/");
+            }, 2000);
         }
     } catch (error) {
         throw new Error(error.message);

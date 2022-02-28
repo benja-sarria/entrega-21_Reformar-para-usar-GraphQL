@@ -9,5 +9,36 @@ body .btn-container {
   bottom: 3em;
   right: 2em;
 }
+body #message-center-container {
+  display: flex;
+  flex-direction: column;
+}
+body #message-center-container .messages-text-container {
+  background-color: rgba(128, 128, 128, 0.13);
+  margin: 1em 0em;
+  min-height: 5vh;
+  border-radius: 0.15em;
+}
+body #message-center-container .messages-text-container tr td {
+  padding: 0.5em;
+}
+body #message-center-container .messages-text-container tr .email-cell {
+  font-weight: 600;
+  color: blue;
+  text-align: left;
+}
+body #message-center-container .messages-text-container tr .message-cell {
+  font-style: italic;
+  color: #54af54;
+  text-align: right;
+}
+body #message-center-container .messages-text-container tr .timestamp-cell {
+  color: #a57b63;
+  text-align: left;
+}
+body #message-center-container .messages-btn {
+  margin-top: 1.2em;
+  align-self: flex-end;
+}
 
 /*# sourceMappingURL=styles.css.map */
