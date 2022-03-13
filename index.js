@@ -4,8 +4,9 @@ const socketIo = require("socket.io");
 const apiRoutes = require("./routers/index");
 const { engine } = require("express-handlebars");
 const path = require("path");
+const dbconfig = require("./db/config");
 const { Products } = require("./utils/productMethods");
-const { Messages } = require("./utils/messagesMethods");
+const { Messages } = require("./utils/messagesMethodsSQLite3");
 
 const app = express();
 
@@ -55,7 +56,8 @@ httpServer.listen(PORT, () => {
 // IO EVENTS
 io.on("connection", async (socket) => {
     console.log("New client connection!");
-    const messages = new Messages("messages.json");
+    const messages = new Messages("ecommerce", dbconfig);
+
     const allProducts = await new Products("products.json").getAllProducts();
     const formattedProducts = allProducts.map((product) => {
         return {
@@ -89,17 +91,24 @@ io.on("connection", async (socket) => {
         }, 2000);
     });
     const allMessages = await messages.getAllMessages();
+    console.log(allMessages);
     socket.emit("messages-list", allMessages);
     socket.on("new-message", async ({ email, message }) => {
         await messages.save({ email, message });
-        const newMessage = await allMessages.find((savedMessage) => {
+        const knex = require("knex")(dbconfig.sqlite);
+        const newMessage = await knex.from("ecommerce").select("*").where({
+            email: email,
+            message: message,
+        });
+        console.log(newMessage[0]);
+        /* const newMessage = await allMessages.find((savedMessage) => {
             console.log(savedMessage);
             console.log(savedMessage.message === message);
             console.log(savedMessage.email === email);
             return (
                 savedMessage.message === message && savedMessage.email === email
             );
-        });
-        io.emit("update-messages-list", newMessage);
+        }); */
+        io.emit("update-messages-list", newMessage[0]);
     });
 });

@@ -21,7 +21,7 @@ class Products {
             console.log(object);
 
             const fileExists = fs.existsSync(
-                `${path.resolve(__dirname, "../db")}/${this.fileName}`
+                `${path.resolve(__dirname, "../data")}/${this.fileName}`
             );
 
             if (!fileExists) {
@@ -32,7 +32,7 @@ class Products {
                 };
                 console.log(`[${JSON.stringify(objectWithId)}]`);
                 fs.writeFile(
-                    `${path.resolve(__dirname, "../db")}/${this.fileName}`,
+                    `${path.resolve(__dirname, "../data")}/${this.fileName}`,
                     `[{}]`,
                     (error) => {
                         if (error) {
@@ -47,8 +47,8 @@ class Products {
                 return objectWithId;
             } else {
                 console.log("escribiendo en archivo");
-                console.log(require("../db/products.json"));
-                const json = require("../db/products.json");
+                console.log(require("../data/products.json"));
+                const json = require("../data/products.json");
 
                 let actualIds = [];
 
@@ -93,7 +93,9 @@ class Products {
                     json.push(objectWithId);
                     const parsedJson = JSON.stringify(json);
                     fs.writeFile(
-                        `${path.resolve(__dirname, "../db")}/${this.fileName}`,
+                        `${path.resolve(__dirname, "../data")}/${
+                            this.fileName
+                        }`,
                         `${parsedJson}`,
                         (error) => {
                             if (error) {
@@ -115,7 +117,7 @@ class Products {
                 json.push(objectWithId);
                 const parsedJson = JSON.stringify(json);
                 fs.writeFile(
-                    `${path.resolve(__dirname, "../db")}/${this.fileName}`,
+                    `${path.resolve(__dirname, "../data")}/${this.fileName}`,
                     `${parsedJson}`,
                     (error) => {
                         if (error) {
@@ -134,7 +136,7 @@ class Products {
     }
 
     async updateProduct(id, propertiesToUpdate) {
-        const json = require("../db/products.json");
+        const json = require("../data/products.json");
 
         const productToUpdate = await this.getProductById(id);
         const updatedProduct = { ...productToUpdate, ...propertiesToUpdate };
@@ -148,7 +150,7 @@ class Products {
 
         const parsedJson = JSON.stringify(updatedJson);
         fs.writeFile(
-            `${path.resolve(__dirname, "../db")}/${this.fileName}`,
+            `${path.resolve(__dirname, "../data")}/${this.fileName}`,
             `${parsedJson}`,
             (error) => {
                 if (error) {
@@ -163,7 +165,7 @@ class Products {
 
     async getProductById(id) {
         try {
-            const json = require("../db/products.json");
+            const json = require("../data/products.json");
 
             const filteredJson = json.filter((product) => product.id === id);
 
@@ -179,7 +181,7 @@ class Products {
 
     async getAllProducts() {
         try {
-            const json = require("../db/products.json");
+            const json = require("../data/products.json");
 
             if (!json.length) {
                 const error = new Error();
@@ -196,7 +198,7 @@ class Products {
 
     async deleteById(id) {
         try {
-            const json = require("../db/products.json");
+            const json = require("../data/products.json");
             const filteredProduct = json.filter((product) => product.id === id);
 
             if (!filteredProduct.length) {
@@ -211,7 +213,7 @@ class Products {
             const parsedJson = JSON.stringify(filteredJson);
 
             await fs.writeFile(
-                `${path.resolve(__dirname, "../db")}/${this.fileName}`,
+                `${path.resolve(__dirname, "../data")}/${this.fileName}`,
                 `${parsedJson}`,
                 (error) => {
                     if (error) {
@@ -228,7 +230,7 @@ class Products {
 
     async deleteAllProducts() {
         try {
-            const json = require("../db/products.json");
+            const json = require("../data/products.json");
 
             if (!json.length) {
                 const error = new Error();
@@ -241,7 +243,7 @@ class Products {
             const parsedJson = JSON.stringify(wipedOutJson);
 
             await fs.writeFile(
-                `${path.resolve(__dirname, "../db")}/${this.fileName}`,
+                `${path.resolve(__dirname, "../data")}/${this.fileName}`,
                 `${parsedJson}`,
                 (error) => {
                     if (error) {

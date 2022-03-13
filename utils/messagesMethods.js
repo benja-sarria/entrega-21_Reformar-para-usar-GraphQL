@@ -22,14 +22,14 @@ class Messages {
             console.log(object);
 
             const fileExists = fs.existsSync(
-                `${path.resolve(__dirname, "../data")}/${this.fileName}`
+                `${path.resolve(__dirname, "../db")}/${this.fileName}`
             );
 
             if (!fileExists) {
                 console.log("creando el archivo");
 
                 fs.writeFile(
-                    `${path.resolve(__dirname, "../data")}/${this.fileName}`,
+                    `${path.resolve(__dirname, "../db")}/${this.fileName}`,
                     `[{}]`,
                     (error) => {
                         if (error) {
@@ -41,14 +41,14 @@ class Messages {
                 );
             } else {
                 console.log("escribiendo en archivo");
-                console.log(require("../data/messages.json"));
-                const json = require("../data/messages.json");
+                console.log(require("../db/messages.json"));
+                const json = require("../db/messages.json");
                 object.time = `[${moment().format("D/MM/YYYY hh:mm:ss")}]`;
                 json.push(object);
                 const parsedJson = JSON.stringify(json);
 
                 fs.writeFile(
-                    `${path.resolve(__dirname, "../data")}/${this.fileName}`,
+                    `${path.resolve(__dirname, "../db")}/${this.fileName}`,
                     `${parsedJson}`,
                     (error) => {
                         if (error) {
@@ -66,7 +66,7 @@ class Messages {
 
     async getAllMessages() {
         try {
-            const json = require("../data/messages.json");
+            const json = require("../db/messages.json");
 
             return json;
         } catch (error) {
