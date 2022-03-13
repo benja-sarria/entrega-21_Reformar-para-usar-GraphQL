@@ -108,14 +108,6 @@ io.on("connection", async (socket) => {
             message: message,
         });
 
-        /* const newMessage = await allMessages.find((savedMessage) => {
-            console.log(savedMessage);
-            console.log(savedMessage.message === message);
-            console.log(savedMessage.email === email);
-            return (
-                savedMessage.message === message && savedMessage.email === email
-            );
-        }); */
         io.emit("update-messages-list", newMessage[0]);
     });
 });
