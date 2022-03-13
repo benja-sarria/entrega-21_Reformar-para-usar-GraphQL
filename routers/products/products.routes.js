@@ -1,6 +1,6 @@
 const express = require("express");
 const productsInstance = require("../../middlewares/productInstance");
-const { Products } = require("../../utils/productMethods");
+
 const path = require("path");
 
 const router = express.Router();
