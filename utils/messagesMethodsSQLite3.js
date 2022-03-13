@@ -55,7 +55,6 @@ class Messages {
                     .from(this.tableName)
                     .select("id", "email", "message", "time");
 
-                console.log(messages);
                 return messages;
             }
         } catch (error) {

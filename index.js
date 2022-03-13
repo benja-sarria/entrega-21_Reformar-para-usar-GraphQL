@@ -5,8 +5,12 @@ const apiRoutes = require("./routers/index");
 const { engine } = require("express-handlebars");
 const path = require("path");
 const dbconfig = require("./db/config");
-const { Products } = require("./utils/productMethods");
+const { Products } = require("./utils/productMethodsMariaDB");
 const { Messages } = require("./utils/messagesMethodsSQLite3");
+const createPersistanceTables = require("./utils/createPersistanceTables");
+
+// Initialize tables
+createPersistanceTables();
 
 const app = express();
 
@@ -58,7 +62,10 @@ io.on("connection", async (socket) => {
     console.log("New client connection!");
     const messages = new Messages("ecommerce", dbconfig);
 
-    const allProducts = await new Products("products.json").getAllProducts();
+    const allProducts = await new Products(
+        "ecommerce",
+        dbconfig
+    ).getAllProducts();
     const formattedProducts = allProducts.map((product) => {
         return {
             ...product,
@@ -73,7 +80,8 @@ io.on("connection", async (socket) => {
     socket.on("product-added", async () => {
         setTimeout(async () => {
             const allProducts = await new Products(
-                "products.json"
+                "ecommerce",
+                dbconfig
             ).getAllProducts();
             const formattedProducts = allProducts.map((product) => {
                 return {
@@ -91,7 +99,6 @@ io.on("connection", async (socket) => {
         }, 2000);
     });
     const allMessages = await messages.getAllMessages();
-    console.log(allMessages);
     socket.emit("messages-list", allMessages);
     socket.on("new-message", async ({ email, message }) => {
         await messages.save({ email, message });
@@ -100,7 +107,7 @@ io.on("connection", async (socket) => {
             email: email,
             message: message,
         });
-        console.log(newMessage[0]);
+
         /* const newMessage = await allMessages.find((savedMessage) => {
             console.log(savedMessage);
             console.log(savedMessage.message === message);

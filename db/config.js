@@ -4,11 +4,11 @@ module.exports = {
     mariaDB: {
         client: "mysql",
         connection: {
-            host: "192.168.64.2",
+            host: "127.0.0.1",
             port: 3306,
             user: "root",
             password: "",
-            database: "test",
+            database: "ecommerce",
         },
     },
     sqlite: {
