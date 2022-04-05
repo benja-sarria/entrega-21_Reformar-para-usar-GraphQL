@@ -5,8 +5,8 @@ const dbconfig = require("../db/config");
 const createPersistanceTables = () => {
     const products = new Products("ecommerce", dbconfig);
     const messages = new Messages("ecommerce", dbconfig);
-    products.createFile();
-    messages.createFile();
+    /* products.createFile();
+    messages.createFile(); */
 };
 
 module.exports = createPersistanceTables;

@@ -116,9 +116,30 @@ sendMsgBtn.addEventListener("click", () => {
 socket.on("messages-list", (data) => {
     msgsContainer.innerHTML = "";
 
+    console.log(data);
+    // Author schema:
+    const authorSchema = new normalizr.schema.Entity("author");
+
+    const messageSchema = new normalizr.schema.Entity("message", {
+        author: authorSchema,
+    });
+    // messages schema:
+    const messagesSchema = new normalizr.schema.Entity("messages", {
+        messages: messageSchema,
+    });
+
+    const denormalizedMessages = normalizr.denormalize(
+        data.result,
+        messageSchema,
+        data.entities
+    );
+
+    console.log(denormalizedMessages);
+
     if (msgsContainer.children.length === 0) {
-        data.forEach((message) => {
+        denormalizedMessages.forEach((message) => {
             console.log(message);
+            console.log(message.author);
             const tr = document.createElement("tr");
             const emailCell = document.createElement("td");
             emailCell.classList.add("email-cell");
@@ -126,10 +147,9 @@ socket.on("messages-list", (data) => {
             messageCell.classList.add("message-cell");
             const timestampCell = document.createElement("td");
             timestampCell.classList.add("timestamp-cell");
-
-            emailCell.textContent = message.email;
-            messageCell.textContent = message.message;
-            timestampCell.textContent = `${message.time}:`;
+            emailCell.textContent = message.author.id;
+            messageCell.textContent = message.text;
+            timestampCell.textContent = `${message.timestamp}:`;
 
             tr.appendChild(emailCell);
             tr.appendChild(timestampCell);

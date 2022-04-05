@@ -7,7 +7,11 @@ const path = require("path");
 const dbconfig = require("./db/config");
 const { Products } = require("./utils/productMethodsMariaDB");
 const { Messages } = require("./utils/messagesMethodsSQLite3");
+const mongoose = require("mongoose");
 const createPersistanceTables = require("./utils/createPersistanceTables");
+const { normalize, schema } = require("normalizr");
+const dotenv = require("dotenv");
+dotenv.config();
 
 // Initialize tables
 createPersistanceTables();
@@ -52,6 +56,15 @@ app.get("/", async (req, res) => {
     });
 });
 
+app.get("/api/products/products-test", async (req, res) => {
+    res.render("index.hbs", {
+        layout: "landing",
+
+        customstyle: `<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">`,
+        customStyleCss: "<link rel='stylesheet' href='../css/styles.css' />",
+    });
+});
+
 // Listen
 httpServer.listen(PORT, () => {
     console.log(`Server is up and running on port: `, PORT);
@@ -60,7 +73,12 @@ httpServer.listen(PORT, () => {
 // IO EVENTS
 io.on("connection", async (socket) => {
     console.log("New client connection!");
-    const messages = new Messages("ecommerce", dbconfig);
+    const messages = new Messages(
+        null,
+        null,
+        process.env.DB_PASSWORD,
+        process.env.DATABASE
+    );
 
     const allProducts = await new Products(
         "ecommerce",
@@ -99,14 +117,41 @@ io.on("connection", async (socket) => {
         }, 2000);
     });
     const allMessages = await messages.getAllMessages();
-    socket.emit("messages-list", allMessages);
+    const messagesObject = {
+        id: "messagesObj",
+        messages: [...allMessages],
+    };
+    // Author schema:
+    const authorSchema = new schema.Entity("author");
+
+    const messageSchema = new schema.Entity("message", {
+        author: authorSchema,
+    });
+    // messages schema:
+    const messagesSchema = new schema.Entity("messages", {
+        messages: messageSchema,
+    });
+    const normalizedMessages = normalize(messagesObject, messagesSchema);
+    socket.emit("messages-list", normalizedMessages);
     socket.on("new-message", async ({ email, message }) => {
-        await messages.save({ email, message });
-        const knex = require("knex")(dbconfig.sqlite);
+        await messages.saveMessage({ email, message });
+        await mongoose.connect(
+            `mongodb+srv://benjasarria:${process.env.DB_PASSWORD}@coderhouse-ecommerce.rogfv.mongodb.net/${process.env.DATABASE}?retryWrites=true&w=majority`
+        );
+        console.log(`Database connected correctly!`);
+
+        const newMessage = await MessagesModel.find({
+            author: {
+                id: email,
+            },
+            text: message,
+        });
+
+        /*  const knex = require("knex")(dbconfig.sqlite);
         const newMessage = await knex.from("ecommerce").select("*").where({
             email: email,
             message: message,
-        });
+        }); */
 
         io.emit("update-messages-list", newMessage[0]);
     });
