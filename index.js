@@ -10,6 +10,7 @@ const { Messages } = require("./utils/messagesMethodsSQLite3");
 const mongoose = require("mongoose");
 const createPersistanceTables = require("./utils/createPersistanceTables");
 const { normalize, schema } = require("normalizr");
+const util = require("util");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -121,17 +122,25 @@ io.on("connection", async (socket) => {
         id: "messagesObj",
         messages: [...allMessages],
     };
+
+    console.log(util.inspect(allMessages, false, 10, true));
     // Author schema:
     const authorSchema = new schema.Entity("author");
 
-    const messageSchema = new schema.Entity("message", {
-        author: authorSchema,
-    });
+    const messageSchema = new schema.Entity(
+        "message",
+        {
+            author: authorSchema,
+        },
+        { idAttribute: "_id" }
+    );
     // messages schema:
     const messagesSchema = new schema.Entity("messages", {
-        messages: messageSchema,
+        messages: [messageSchema],
     });
     const normalizedMessages = normalize(messagesObject, messagesSchema);
+
+    console.log(util.inspect(normalizedMessages, false, 10, true));
     socket.emit("messages-list", normalizedMessages);
     socket.on("new-message", async ({ email, message }) => {
         await messages.saveMessage({ email, message });

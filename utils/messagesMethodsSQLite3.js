@@ -93,7 +93,7 @@ class Messages {
             await mongoose.connect(this.DB_URI);
             console.log(`Database connected correctly!`);
 
-            const messages = await MessagesModel.find();
+            const messages = await MessagesModel.find().lean();
 
             return messages;
         } catch (error) {

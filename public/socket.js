@@ -115,29 +115,38 @@ sendMsgBtn.addEventListener("click", () => {
 
 socket.on("messages-list", (data) => {
     msgsContainer.innerHTML = "";
-
+    console.log(normalizr);
     console.log(data);
     // Author schema:
     const authorSchema = new normalizr.schema.Entity("author");
 
-    const messageSchema = new normalizr.schema.Entity("message", {
-        author: authorSchema,
-    });
+    const messageSchema = new normalizr.schema.Entity(
+        "message",
+        {
+            author: authorSchema,
+        },
+        { idAttribute: "_id" }
+    );
     // messages schema:
     const messagesSchema = new normalizr.schema.Entity("messages", {
-        messages: messageSchema,
+        messages: [messageSchema],
     });
 
     const denormalizedMessages = normalizr.denormalize(
         data.result,
-        messageSchema,
+        messagesSchema,
         data.entities
     );
 
     console.log(denormalizedMessages);
 
+    console.log(
+        `PESO SIN NORMALIZAR => ${JSON.stringify(denormalizedMessages).length}`
+    );
+    console.log(`PESO NORMALIZADO => ${JSON.stringify(data).length}`);
+
     if (msgsContainer.children.length === 0) {
-        denormalizedMessages.forEach((message) => {
+        denormalizedMessages.messages.forEach((message) => {
             console.log(message);
             console.log(message.author);
             const tr = document.createElement("tr");
