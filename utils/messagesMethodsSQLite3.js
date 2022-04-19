@@ -45,6 +45,7 @@ class Messages {
     async saveMessage(object) {
         try {
             console.log(object);
+            await mongoose.disconnect();
             await mongoose.connect(this.DB_URI);
             console.log(`Database connected correctly!`);
 
@@ -89,7 +90,7 @@ class Messages {
 
                 return messages;
             } */
-
+            await mongoose.disconnect();
             await mongoose.connect(this.DB_URI);
             console.log(`Database connected correctly!`);
 
@@ -98,6 +99,8 @@ class Messages {
             return messages;
         } catch (error) {
             throw new Error(error.message);
+        } finally {
+            mongoose.disconnect();
         }
     }
 }

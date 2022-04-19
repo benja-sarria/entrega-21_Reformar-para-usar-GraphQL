@@ -17,4 +17,8 @@ module.exports = {
             filename: path.resolve(__dirname, "./ecommerce.sqlite"),
         },
     },
+    mongodb: {
+        connectTo: (database) =>
+            `mongodb+srv://benjasarria:${process.env.DB_PASSWORD}@coderhouse-ecommerce.rogfv.mongodb.net/${database}?retryWrites=true&w=majority`,
+    },
 };

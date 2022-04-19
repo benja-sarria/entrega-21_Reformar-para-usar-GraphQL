@@ -16,8 +16,8 @@
     </head>
     <body class="container col-10 col-md-8 col-lg-6 p-5">
         <div>
-            <h2>Bienvenido {{currentUser.name}}</h2>
-            <button>Logout</button>
+            <h2>Bienvenido {{currentUser.email}}</h2>
+            <button id="logout-btn">Logout</button>
         </div>
         <div class="accordion accordion-flush" id="accordionFlushExample">
             <div class="accordion-item">
@@ -357,6 +357,13 @@
                 </div>
             </div>
         </div>
+        <script>
+            const logoutBtn = document.querySelector("#logout-btn");
+            logoutBtn.addEventListener("click", () => {
+                console.log(window.location)
+                window.location.href = `${window.location.origin}/api/logout` 
+            })
+        </script>
         <script src="./index.js"></script>
         <script
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"

@@ -15,6 +15,7 @@ const dotenv = require("dotenv");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const auth = require("./middlewares/auth");
+const passport = require("./middlewares/passport");
 
 dotenv.config();
 
@@ -57,8 +58,13 @@ app.use(
         store: MongoStore.create({
             mongoUrl: `mongodb+srv://benjasarria:${process.env.DB_PASSWORD}@coderhouse-ecommerce.rogfv.mongodb.net/${process.env.SESSION_DB}?retryWrites=true&w=majority`,
         }),
+        cookie: {
+            maxAge: 600000,
+        },
     })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes
 app.use("/api", apiRoutes);
@@ -67,7 +73,7 @@ app.use("/api", apiRoutes);
 // HANDLEBARS
 // /api/products/
 app.get("/", auth, async (req, res) => {
-    const user = req.session.user;
+    const user = await req.user;
 
     console.log(user);
 
@@ -80,10 +86,23 @@ app.get("/", auth, async (req, res) => {
 });
 
 app.get("/login", async (req, res) => {
+    mongoose.connect(dbconfig.mongodb.connectTo("demo_pb_25")).then(() => {
+        console.log("Connected to DB!");
+        console.log("Server is up and running on port: ", +PORT);
+    });
     res.sendFile(path.join(__dirname + "/public/login.html"));
 });
+app.get("/register", async (req, res) => {
+    res.sendFile(path.join(__dirname + "/public/register.html"));
+});
+app.get("/login-error", async (req, res) => {
+    res.sendFile(path.join(__dirname + "/public/login-error.html"));
+});
+app.get("/register-error", async (req, res) => {
+    res.sendFile(path.join(__dirname + "/public/register-error.html"));
+});
 
-app.post("/login", (req, res) => {
+/* app.post("/login", (req, res) => {
     const { name, email } = req.body;
     const user = {
         name: name,
@@ -98,8 +117,8 @@ app.post("/login", (req, res) => {
         res.redirect("/");
     });
 });
-
-app.get("/logout", auth, async (req, res) => {
+ */
+/* app.get("/logout", auth, async (req, res) => {
     try {
         await fs.writeFile("./data/users.json", JSON.stringify(users));
         req.session.destroy((err) => {
@@ -114,7 +133,7 @@ app.get("/logout", auth, async (req, res) => {
     } catch (err) {
         console.log(err);
     }
-});
+}); */
 
 app.get("/api/products/products-test", async (req, res) => {
     res.render("index.hbs", {
@@ -127,7 +146,10 @@ app.get("/api/products/products-test", async (req, res) => {
 
 // Listen
 httpServer.listen(PORT, () => {
-    console.log(`Server is up and running on port: `, PORT);
+    mongoose.connect(dbconfig.mongodb.connectTo("demo_pb_25")).then(() => {
+        console.log("Connected to DB!");
+        console.log("Server is up and running on port: ", +PORT);
+    });
 });
 
 // IO EVENTS
@@ -201,6 +223,7 @@ io.on("connection", async (socket) => {
     socket.emit("messages-list", normalizedMessages);
     socket.on("new-message", async ({ email, message }) => {
         await messages.saveMessage({ email, message });
+        await mongoose.disconnect();
         await mongoose.connect(
             `mongodb+srv://benjasarria:${process.env.DB_PASSWORD}@coderhouse-ecommerce.rogfv.mongodb.net/${process.env.DATABASE}?retryWrites=true&w=majority`
         );
