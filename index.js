@@ -16,6 +16,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const auth = require("./middlewares/auth");
 const passport = require("./middlewares/passport");
+const minimist = require("minimist");
 
 dotenv.config();
 
@@ -24,7 +25,12 @@ createPersistanceTables();
 
 const app = express();
 
-const PORT = process.env.PORT || 8080;
+const args = minimist(process.argv.slice(2), {
+    alias: {
+        p: "PORT",
+    },
+});
+const PORT = args.PORT || 8080;
 const httpServer = http.createServer(app);
 const io = socketIo(httpServer);
 
@@ -100,6 +106,18 @@ app.get("/login-error", async (req, res) => {
 });
 app.get("/register-error", async (req, res) => {
     res.sendFile(path.join(__dirname + "/public/register-error.html"));
+});
+
+app.get("/info", (req, res) => {
+    res.json({
+        entryArguments: args,
+        platformName: process.platform,
+        nodeVersion: process.version,
+        rssMemory: process.memoryUsage().rss,
+        execPath: process.execPath,
+        processId: process.pid,
+        projectFolder: process.cwd(),
+    });
 });
 
 /* app.post("/login", (req, res) => {

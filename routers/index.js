@@ -1,5 +1,6 @@
 const express = require("express");
 const productRoutes = require("./products/products.routes");
+const randomsRoutes = require("./randoms/randoms.routes");
 const authControllers = require("../controllers/auth.controllers");
 const passport = require("../middlewares/passport");
 const auth = require("../middlewares/auth");
@@ -12,6 +13,7 @@ router.use(express.urlencoded({ extended: true }));
 
 // Routes
 router.use("/products", productRoutes);
+router.use("/randoms", randomsRoutes);
 
 router.post(
     "/register",
