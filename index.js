@@ -17,6 +17,8 @@ const MongoStore = require("connect-mongo");
 const auth = require("./middlewares/auth");
 const passport = require("./middlewares/passport");
 const minimist = require("minimist");
+const compression = require("compression");
+const { logger } = require("./logger/index");
 
 dotenv.config();
 
@@ -80,7 +82,7 @@ app.use("/api", apiRoutes);
 // /api/products/
 app.get("/", auth, async (req, res) => {
     const user = await req.user;
-
+    logger.info(`[${req.method}] => ${req.path}`);
     console.log(user);
 
     res.render("index.hbs", {
@@ -92,6 +94,7 @@ app.get("/", auth, async (req, res) => {
 });
 
 app.get("/login", async (req, res) => {
+    logger.info(`[${req.method}] => ${req.path}`);
     mongoose.connect(dbconfig.mongodb.connectTo("demo_pb_25")).then(() => {
         console.log("Connected to DB!");
         console.log("Server is up and running on port: ", +PORT);
@@ -99,16 +102,20 @@ app.get("/login", async (req, res) => {
     res.sendFile(path.join(__dirname + "/public/login.html"));
 });
 app.get("/register", async (req, res) => {
+    logger.info(`[${req.method}] => ${req.path}`);
     res.sendFile(path.join(__dirname + "/public/register.html"));
 });
 app.get("/login-error", async (req, res) => {
+    logger.info(`[${req.method}] => ${req.path}`);
     res.sendFile(path.join(__dirname + "/public/login-error.html"));
 });
 app.get("/register-error", async (req, res) => {
+    logger.info(`[${req.method}] => ${req.path}`);
     res.sendFile(path.join(__dirname + "/public/register-error.html"));
 });
 
-app.get("/info", (req, res) => {
+app.get("/info", compression(), (req, res) => {
+    logger.info(`[${req.method}] => ${req.path}`);
     res.json({
         entryArguments: args,
         platformName: process.platform,
@@ -154,6 +161,7 @@ app.get("/info", (req, res) => {
 }); */
 
 app.get("/api/products/products-test", async (req, res) => {
+    logger.info(`[${req.method}] => ${req.path}`);
     res.render("index.hbs", {
         layout: "landing",
 
@@ -237,7 +245,11 @@ io.on("connection", async (socket) => {
         messages: [messageSchema],
     });
     const normalizedMessages = normalize(messagesObject, messagesSchema);
-
+    if (!normalizedMessages) {
+        const error = new Error();
+        error.message = "There has been an error";
+        logger.error(`[error] => ${error.message}`);
+    }
     socket.emit("messages-list", normalizedMessages);
     socket.on("new-message", async ({ email, message }) => {
         await messages.saveMessage({ email, message });
@@ -261,5 +273,12 @@ io.on("connection", async (socket) => {
         }); */
 
         io.emit("update-messages-list", newMessage[0]);
+    });
+});
+
+app.get("*", (req, res) => {
+    logger.warn(`[${req.method}] => ${req.path}`);
+    res.send({
+        error: "route doesn't exist",
     });
 });

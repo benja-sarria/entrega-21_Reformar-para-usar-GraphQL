@@ -3,6 +3,7 @@ const productsInstance = require("../../middlewares/productInstance");
 
 const path = require("path");
 const { createProducts } = require("../../utils/createProduct");
+const { logger } = require("../../logger/index");
 
 const router = express.Router();
 
@@ -15,6 +16,7 @@ router.use(productsInstance);
 // HANDLEBARS
 // /api/products/
 router.get("/", async (req, res) => {
+    logger.info(`[${req.method}] => ${req.path}`);
     // const allProducts = await req.products.getAllProducts();
     const formattedProducts = /* allProducts.map((product) => {
         return {
@@ -35,6 +37,7 @@ router.get("/", async (req, res) => {
 // GET
 router.get("/products-test", async (req, res) => {
     try {
+        logger.info(`[${req.method}] => ${req.path}`);
         console.log("Entrando a la ruta productos test");
         const formattedProducts = createProducts(5);
         console.log(formattedProducts);
@@ -45,6 +48,7 @@ router.get("/products-test", async (req, res) => {
                 "<link rel='stylesheet' href='../css/styles.css' />",
         });
     } catch (error) {
+        logger.error(`[error] => ${error.message}`);
         throw new Error(error.message);
     }
 });
@@ -52,6 +56,7 @@ router.get("/products-test", async (req, res) => {
 // GET
 router.get("/:id", async (req, res) => {
     try {
+        logger.info(`[${req.method}] => ${req.path}`);
         console.log(req.query);
         let notANumericalID = false;
         if (!+req.params.id && !+req.query.getProductById) {
@@ -78,6 +83,7 @@ router.get("/:id", async (req, res) => {
             );
         }
     } catch (error) {
+        logger.error(`[error] => ${error.message}`);
         throw new Error(error.message);
     }
 });
@@ -85,12 +91,14 @@ router.get("/:id", async (req, res) => {
 // POST
 router.post("/", async (req, res) => {
     try {
+        logger.info(`[${req.method}] => ${req.path}`);
         console.log(req.body);
         let propertyMissing = false;
         if (!req.body.title || !req.body.price || !req.body.thumbnail) {
             const error = new Error();
             error.message =
                 "You have to provide an Object with the following properties in order to add a Product: title, price and thumbnail";
+            logger.error(`[error] => ${error.message}`);
             res.status(400).json({
                 error: error.message,
             });
@@ -106,6 +114,7 @@ router.post("/", async (req, res) => {
             }, 2000);
         }
     } catch (error) {
+        logger.error(`[error] => ${error.message}`);
         throw new Error(error.message);
     }
 });
@@ -113,6 +122,7 @@ router.post("/", async (req, res) => {
 // PUT
 router.put("/:id", async (req, res) => {
     try {
+        logger.info(`[${req.method}] => ${req.path}`);
         if (!req.params.id || !+req.params.id) {
             const error = new Error();
             error.message =
@@ -169,12 +179,14 @@ router.put("/:id", async (req, res) => {
             }
         }
     } catch (error) {
+        logger.error(`[error] => ${error.message}`);
         throw new Error(error.message);
     }
 });
 
 router.delete("/:id", async (req, res) => {
     try {
+        logger.info(`[${req.method}] => ${req.path}`);
         let notANumericalID = false;
         if (!+req.params.id) {
             const error = new Error();
@@ -197,6 +209,7 @@ router.delete("/:id", async (req, res) => {
             );
         }
     } catch (error) {
+        logger.error(`[error] => ${error.message}`);
         throw new Error(error.message);
     }
 });

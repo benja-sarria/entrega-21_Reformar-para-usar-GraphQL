@@ -14,6 +14,7 @@
     "dependencies": {
         "@vscode/sqlite3": "^5.0.7",
         "bcrypt": "^5.0.1",
+        "compression": "^1.7.4",
         "connect-mongo": "^4.6.0",
         "dotenv": "^16.0.0",
         "ejs": "^3.1.6",
@@ -30,8 +31,10 @@
         "passport": "^0.5.2",
         "passport-local": "^1.0.0",
         "pug": "^3.0.2",
+        "quokka-treasure-chest": "^1.0.2",
         "socket.io": "^4.4.1",
-        "sqlite3": "^5.0.2"
+        "sqlite3": "^5.0.2",
+        "winston": "^3.7.2"
     },
     "devDependencies": {
         "faker": "^5.5.3",
