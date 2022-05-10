@@ -1,0 +1,61 @@
+Statistical profiling result from block.log, (133821 ticks, 1 unaccounted, 0 excluded).
+
+ [Shared libraries]:
+   ticks  total  nonlib   name
+  132674   99.1%          C:\WINDOWS\SYSTEM32\ntdll.dll
+   1069    0.8%          D:\Program Files\nodejs\node.exe
+     22    0.0%          C:\WINDOWS\System32\KERNELBASE.dll
+     13    0.0%          C:\WINDOWS\System32\KERNEL32.DLL
+
+ [JavaScript]:
+   ticks  total  nonlib   name
+      9    0.0%   20.9%  LazyCompile: *resolve node:path:158:10
+      4    0.0%    9.3%  Function: ^processTimers node:internal/timers:487:25
+      3    0.0%    7.0%  LazyCompile: *deserializeObject D:\Mis Documentos\benja\1-CODERHOUSE-CARRERA_FULLSTACK_DEVELOPER\BACKEND\Entregas\entrega_04\node_modules\bson\lib\parser\deserializer.js:65:27
+      2    0.0%    4.7%  LazyCompile: *normalizeString node:path:66:25
+      2    0.0%    4.7%  Function: ^measureRoundTripTime D:\Mis Documentos\benja\1-CODERHOUSE-CARRERA_FULLSTACK_DEVELOPER\BACKEND\Entregas\entrega_04\node_modules\mongodb\lib\sdam\monitor.js:281:30
+      1    0.0%    2.3%  RegExp: ; *([!#$%&'*+.^_`|~0-9A-Za-z-]+) *= *("(?:[\u000b\u0020\u0021\u0023-\u005b\u005d-\u007e\u0080-\u00ff]|\\[\u000b\u0020-\u00ff])*"|[!#$%&'*+.^_`|~0-9A-Za-z-]+) *
+      1    0.0%    2.3%  LazyCompile: *toNamespacedPath node:path:618:19
+      1    0.0%    2.3%  LazyCompile: *slice node:buffer:593:12
+      1    0.0%    2.3%  LazyCompile: *remove node:internal/linkedlist:16:16
+      1    0.0%    2.3%  LazyCompile: *readInt32LE node:internal/buffer:385:21
+      1    0.0%    2.3%  LazyCompile: *processTicksAndRejections node:internal/process/task_queues:68:35
+      1    0.0%    2.3%  LazyCompile: *nextPart node:fs:2386:31
+      1    0.0%    2.3%  LazyCompile: *emit node:events:470:44
+      1    0.0%    2.3%  LazyCompile: *_copy node:buffer:200:15
+      1    0.0%    2.3%  LazyCompile: *Long.isLong D:\Mis Documentos\benja\1-CODERHOUSE-CARRERA_FULLSTACK_DEVELOPER\BACKEND\Entregas\entrega_04\node_modules\bson\lib\long.js:236:28
+      1    0.0%    2.3%  LazyCompile: *Long D:\Mis Documentos\benja\1-CODERHOUSE-CARRERA_FULLSTACK_DEVELOPER\BACKEND\Entregas\entrega_04\node_modules\bson\lib\long.js:58:18
+      1    0.0%    2.3%  Function: ^updateServers D:\Mis Documentos\benja\1-CODERHOUSE-CARRERA_FULLSTACK_DEVELOPER\BACKEND\Entregas\entrega_04\node_modules\mongodb\lib\sdam\topology.js:560:23
+      1    0.0%    2.3%  Function: ^listOnTimeout node:internal/timers:507:25
+      1    0.0%    2.3%  Function: ^isWindowsDeviceRoot node:path:60:29
+      1    0.0%    2.3%  Function: ^handleWriteReq node:internal/stream_base_commons:45:24
+      1    0.0%    2.3%  Function: ^fromString node:buffer:431:20
+      1    0.0%    2.3%  Function: ^fresh D:\Mis Documentos\benja\1-CODERHOUSE-CARRERA_FULLSTACK_DEVELOPER\BACKEND\Entregas\entrega_04\node_modules\parseurl\index.js:153:16
+      1    0.0%    2.3%  Function: ^formatWithOptions node:internal/util/inspect:2022:27
+      1    0.0%    2.3%  Function: ^ensureBuffer D:\Mis Documentos\benja\1-CODERHOUSE-CARRERA_FULLSTACK_DEVELOPER\BACKEND\Entregas\entrega_04\node_modules\bson\lib\ensure_buffer.js:15:22
+      1    0.0%    2.3%  Function: ^compileFunction node:vm:308:25
+      1    0.0%    2.3%  Function: ^ObjectId D:\Mis Documentos\benja\1-CODERHOUSE-CARRERA_FULLSTACK_DEVELOPER\BACKEND\Entregas\entrega_04\node_modules\bson\lib\objectid.js:23:22
+      1    0.0%    2.3%  Function: ^<anonymous> D:\Mis Documentos\benja\1-CODERHOUSE-CARRERA_FULLSTACK_DEVELOPER\BACKEND\Entregas\entrega_04\node_modules\mongodb\lib\sdam\topology.js:530:53
+
+ [C++]:
+   ticks  total  nonlib   name
+
+ [Summary]:
+   ticks  total  nonlib   name
+     42    0.0%   97.7%  JavaScript
+      0    0.0%    0.0%  C++
+     14    0.0%   32.6%  GC
+  133778  100.0%          Shared libraries
+      1    0.0%          Unaccounted
+
+ [C++ entry points]:
+   ticks    cpp   total   name
+
+ [Bottom up (heavy) profile]:
+  Note: percentage shows a share of a particular caller in the total
+  amount of its parent calls.
+  Callers occupying less than 1.0% are not shown.
+
+   ticks parent  name
+  132674   99.1%  C:\WINDOWS\SYSTEM32\ntdll.dll
+

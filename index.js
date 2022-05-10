@@ -116,6 +116,7 @@ app.get("/register-error", async (req, res) => {
 
 app.get("/info", compression(), (req, res) => {
     logger.info(`[${req.method}] => ${req.path}`);
+
     res.json({
         entryArguments: args,
         platformName: process.platform,
