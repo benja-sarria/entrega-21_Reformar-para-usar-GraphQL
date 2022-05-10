@@ -116,6 +116,9 @@ app.get("/register-error", async (req, res) => {
 
 app.get("/info", compression(), (req, res) => {
     logger.info(`[${req.method}] => ${req.path}`);
+    console.log("Bloqueando el proceso");
+    console.log("Bloqueando el proceso");
+    console.log("Bloqueando el proceso");
 
     res.json({
         entryArguments: args,
