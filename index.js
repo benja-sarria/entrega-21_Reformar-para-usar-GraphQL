@@ -32,7 +32,7 @@ const args = minimist(process.argv.slice(2), {
         p: "PORT",
     },
 });
-const PORT = args.PORT || 8080;
+const PORT = process.env.PORT || args.PORT || 8080;
 const httpServer = http.createServer(app);
 const io = socketIo(httpServer);
 
