@@ -28,6 +28,7 @@ passport.use(
     "login",
     new LocalStrategy(async (username, password, done) => {
         try {
+            console.log("DENTRO DEL LOGIN");
             const user = await User.getByEmail(username);
             if (!isValidPassword(user, password)) {
                 console.log("Invalid user or password");
@@ -49,6 +50,7 @@ passport.use(
         },
         async (req, username, password, done) => {
             try {
+                console.log("entrando en el crear");
                 const userObject = {
                     firstname: req.body.firstname,
                     lastname: req.body.lastname,
