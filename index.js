@@ -19,6 +19,10 @@ const passport = require("./middlewares/passport");
 const minimist = require("minimist");
 const compression = require("compression");
 const { logger } = require("./logger/index");
+import express from "express";
+import { graphqlHTTP } from "express-graphql";
+import { buildSchema } from "graphql";
+import crypto from "crypto";
 
 dotenv.config();
 
