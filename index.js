@@ -19,10 +19,9 @@ const passport = require("./middlewares/passport");
 const minimist = require("minimist");
 const compression = require("compression");
 const { logger } = require("./logger/index");
-import express from "express";
-import { graphqlHTTP } from "express-graphql";
-import { buildSchema } from "graphql";
-import crypto from "crypto";
+const { graphqlHTTP } = require("express-graphql");
+const { buildSchema } = require("graphql");
+const { getUser, updateUser, createUser, deleteUser } = require("./resolvers");
 
 dotenv.config();
 
@@ -40,25 +39,38 @@ const PORT = process.env.PORT || args.PORT || 8080;
 const httpServer = http.createServer(app);
 const io = socketIo(httpServer);
 
-const schema = buildSchema(`
-  type Persona {
-    id: ID!
-    nombre: String,
-    edad: Int
-  }
-  input PersonaInput {
-    nombre: String,
-    edad: Int
-  }
-  type Query {
-    getPersona(id: ID!): Persona,
-    getPersonas(campo: String, valor: String): [Persona],
-  }
-  type Mutation {
-    createPersona(datos: PersonaInput): Persona
-    updatePersona(id: ID!, datos: PersonaInput): Persona,
-    deletePersona(id: ID!): Persona,
-  }
+const graphQLSchema = buildSchema(`
+    type User {
+        id: ID!
+        firstname: String!,
+        lastname: String!,
+        birthdate: String!,
+        age: Int!,
+        email: String!,
+        password: String!,
+        createdAt: String! ,
+        updatedAt: String!,
+    }
+
+    input UserInput {
+        firstname: String,
+        lastname: String,
+        birthdate: String,
+        age: Int,
+        email: String,
+        password: String,
+    }
+
+    type Query {
+        getUsers: [User],
+        getUser(id: ID!): User
+    }
+
+    type Mutation {
+        createUser(data: UserInput): User,
+        updateUser(id: ID!, data: UserInput): User,
+        deleteUser(id: ID!): User,
+    }
 `);
 
 // Templates Engine
@@ -79,6 +91,14 @@ app.set("views", "./views");
 app.set("views engine", "hbs");
 
 // Middlewares
+app.use(
+    "/graphql",
+    graphqlHTTP({
+        schema: graphQLSchema,
+        rootValue: { getUser, updateUser, createUser, deleteUser },
+        graphiql: true,
+    })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));

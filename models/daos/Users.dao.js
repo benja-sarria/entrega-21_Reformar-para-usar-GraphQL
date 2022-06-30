@@ -51,6 +51,28 @@ class UsersDao extends MongoDBContainer {
         }
     }
 
+    async updateUser(id, data) {
+        try {
+            const oldUser = this.getById(id);
+            const updatedUser = { ...oldUser, ...data };
+            const user = await this.createItem(updatedUser);
+            return user;
+        } catch (error) {
+            if (
+                error.message.toLowerCase().includes("e11000") ||
+                error.message.toLowerCase().includes("duplicate")
+            ) {
+                const newError = formatErrorObject(
+                    constants.STATUS.BAD_REQUEST,
+                    "User with given email already exist"
+                );
+                // throw new Error(JSON.stringify(newError));
+                return newError;
+            }
+            throw new Error(error);
+        }
+    }
+
     async getById(id) {
         try {
             await mongoose
@@ -91,6 +113,19 @@ class UsersDao extends MongoDBContainer {
             } else {
                 return document;
             }
+        } catch (error) {
+            const newError = formatErrorObject(
+                INTERNAL_ERROR.tag,
+                error.message
+            );
+            // throw new Error(JSON.stringify(newError));
+            return newError;
+        }
+    }
+
+    async deleteUser(id) {
+        try {
+            await this.model.deleteOne({ _id: id });
         } catch (error) {
             const newError = formatErrorObject(
                 INTERNAL_ERROR.tag,
