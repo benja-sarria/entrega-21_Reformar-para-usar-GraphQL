@@ -40,6 +40,27 @@ const PORT = process.env.PORT || args.PORT || 8080;
 const httpServer = http.createServer(app);
 const io = socketIo(httpServer);
 
+const schema = buildSchema(`
+  type Persona {
+    id: ID!
+    nombre: String,
+    edad: Int
+  }
+  input PersonaInput {
+    nombre: String,
+    edad: Int
+  }
+  type Query {
+    getPersona(id: ID!): Persona,
+    getPersonas(campo: String, valor: String): [Persona],
+  }
+  type Mutation {
+    createPersona(datos: PersonaInput): Persona
+    updatePersona(id: ID!, datos: PersonaInput): Persona,
+    deletePersona(id: ID!): Persona,
+  }
+`);
+
 // Templates Engine
 // HANDLEBARS
 app.engine(
